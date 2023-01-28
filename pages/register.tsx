@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 
+import { useContext, useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+
+import { UserContext } from "@/context/UserContext";
 
 type Inputs = {
   username: string;
@@ -16,6 +19,7 @@ type RegisterResponse = {
 };
 
 export default function Register() {
+  const { state } = useContext(UserContext);
   const router = useRouter();
 
   const {
@@ -54,6 +58,12 @@ export default function Register() {
         }
       });
   };
+
+  useEffect(() => {
+    if (state.isLogged) {
+      router.push("/");
+    }
+  }, []);
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900 pt-10">
@@ -139,7 +149,7 @@ export default function Register() {
                 Create an account
               </button>
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                Already have an account? {" "}
+                Already have an account?{" "}
                 <Link
                   href="/login"
                   className="font-medium text-primary-600 hover:underline dark:text-primary-500"

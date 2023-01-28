@@ -11,8 +11,6 @@ const Header = () => {
         <meta name="description" content="Content" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      
     </>
   );
 };

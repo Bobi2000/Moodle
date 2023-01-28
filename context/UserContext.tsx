@@ -1,13 +1,20 @@
 import Navbar from "@/shared/components/navbar";
-import { createContext, ReactNode, Reducer, useReducer } from "react";
+import { createContext, Reducer, useEffect, useReducer } from "react";
 
 type State = {
   isLogged: boolean;
+  isAdmin: boolean;
 };
 
 type Action =
   | {
       type: "LOGGIN";
+    }
+  | {
+      type: "ISADMIN";
+    }
+  | {
+      type: "ISNTADMIN";
     }
   | { type: "LOGOUT" };
 
@@ -19,6 +26,7 @@ type ContextType = {
 const defaultContext: ContextType = {
   state: {
     isLogged: false,
+    isAdmin: false,
   },
   dispatch: () => null,
 };
@@ -35,10 +43,21 @@ const userReducer: Reducer<State, Action> = (
         ...prevState,
         isLogged: true,
       };
+    case "ISADMIN":
+      return {
+        ...prevState,
+        isAdmin: true,
+      };
+    case "ISNTADMIN":
+      return {
+        ...prevState,
+        isAdmin: false,
+      };
     case "LOGOUT":
       return {
         ...prevState,
         isLogged: false,
+        isAdmin: false,
       };
   }
 };
@@ -49,9 +68,27 @@ const UserContextProvider: React.FC<any> = ({ children }: any) => {
     defaultContext.state
   );
 
+  useEffect(() => {
+    if (localStorage.getItem("userId") ? true : false) {
+      state.isLogged = true;
+      dispatch({ type: "LOGGIN" });
+    } else {
+      state.isLogged = false;
+      dispatch({ type: "LOGOUT" });
+    }
+
+    if (localStorage.getItem("isAdmin") ? true : false) {
+      state.isAdmin = true;
+      dispatch({ type: "ISADMIN" });
+    } else {
+      state.isAdmin = false;
+      dispatch({ type: "ISNTADMIN" });
+    }
+  }, []);
+
   return (
     <UserContext.Provider value={{ state, dispatch }}>
-      <Navbar isLogged={state.isLogged} />
+      <Navbar isLogged={state.isLogged} isAdmin={state.isAdmin} />
       {children}
     </UserContext.Provider>
   );

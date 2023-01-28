@@ -4,6 +4,7 @@ import db from "./../../firebase/firebase";
 
 type Data = {
   isUserSuccessfullyLoggedIn?: boolean;
+  isUserAdmin?: boolean;
   userId?: string;
 };
 
@@ -29,5 +30,17 @@ export default async function login(
     return;
   }
 
-  res.status(200).json({ isUserSuccessfullyLoggedIn: true, userId: curUser.id});
+  let isUserAdmin = false;
+
+  if (curUser.hasOwnProperty("role") && curUser.role === "admin") {
+    isUserAdmin = true;
+  }
+
+  res
+    .status(200)
+    .json({
+      isUserSuccessfullyLoggedIn: true,
+      userId: curUser.id,
+      isUserAdmin,
+    });
 }

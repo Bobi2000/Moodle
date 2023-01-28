@@ -1,15 +1,16 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { UserContext } from "@/context/UserContext";
 
 type Props = {
   isLogged: boolean;
+  isAdmin: boolean;
 };
 
-const Navbar: React.FC<Props> = ({ isLogged }: any) => {
+const Navbar: React.FC<Props> = ({ isLogged, isAdmin }: Props) => {
   const [active, setActive] = useState<boolean>(false);
 
   const { dispatch: userDisptach } = useContext(UserContext);
@@ -77,11 +78,21 @@ const Navbar: React.FC<Props> = ({ isLogged }: any) => {
               </>
             )}
 
+            {isAdmin && (
+              <Link
+                href="/manage"
+                className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white font-bold items-center justify-center hover:bg-blue-900 hover:text-white"
+              >
+                Manage
+              </Link>
+            )}
+
             {isLogged && (
               <>
                 <button
                   onClick={() => {
                     localStorage.removeItem("userId");
+                    localStorage.removeItem("isAdmin");
                     userDisptach({ type: "LOGOUT" });
                     router.push("/");
                   }}

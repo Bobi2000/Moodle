@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 import { UserContext } from "@/context/UserContext";
@@ -14,10 +14,11 @@ type Inputs = {
 type LoginResponse = {
   isUserSuccessfullyLoggedIn?: boolean;
   userId?: string;
+  isUserAdmin?: boolean;
 };
 
 export default function Login() {
-  const { dispatch: userDisptach } = useContext(UserContext);
+  const { dispatch: userDisptach, state } = useContext(UserContext);
 
   const router = useRouter();
 
@@ -46,10 +47,20 @@ export default function Login() {
         } else if (data.isUserSuccessfullyLoggedIn) {
           localStorage.setItem("userId", data.userId!);
           userDisptach({ type: "LOGGIN" });
+          if (data.isUserAdmin && data.isUserAdmin === true) {
+            localStorage.setItem("isAdmin", "true");
+            userDisptach({ type: "ISADMIN" });
+          }
           router.push("/");
         }
       });
   };
+
+  useEffect(() => {
+    if (state.isLogged) {
+      router.push("/");
+    }
+  }, []);
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900 pt-10">
