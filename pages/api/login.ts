@@ -12,11 +12,15 @@ export default async function login(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
+  if (req.method !== "POST") {
+    res.status(405).send({ message: "Only POST requests allowed" } as any);
+    return;
+  }
+
   const data = req.body;
 
   const entries = await db.collection("Users").get();
   const entriesData = entries.docs.map((entry) => {
-    // return { doc: entry.id, data: { ...entry.data() } };
     return { ...entry.data(), id: entry.id };
   }) as any;
 
@@ -36,11 +40,9 @@ export default async function login(
     isUserAdmin = true;
   }
 
-  res
-    .status(200)
-    .json({
-      isUserSuccessfullyLoggedIn: true,
-      userId: curUser.id,
-      isUserAdmin,
-    });
+  res.status(200).json({
+    isUserSuccessfullyLoggedIn: true,
+    userId: curUser.id,
+    isUserAdmin,
+  });
 }

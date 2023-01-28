@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@firebase/auth": "^0.21.1",
     "@next/font": "13.1.5",
     "@types/node": "18.11.18",
     "@types/react": "18.0.27",
@@ -28,5 +29,4 @@
     "postcss": "^8.4.21",
     "tailwindcss": "^3.2.4"
   }
-  
 }
