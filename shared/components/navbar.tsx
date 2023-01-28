@@ -1,9 +1,20 @@
-import { useState } from "react";
-
 import Link from "next/link";
+import { useRouter } from "next/router";
 
-const Navbar = () => {
-  const [active, setActive] = useState(false);
+import { useContext, useState } from "react";
+
+import { UserContext } from "@/context/UserContext";
+
+type Props = {
+  isLogged: boolean;
+};
+
+const Navbar: React.FC<Props> = ({ isLogged }: any) => {
+  const [active, setActive] = useState<boolean>(false);
+
+  const { dispatch: userDisptach } = useContext(UserContext);
+
+  const router = useRouter();
 
   const handleClick = () => {
     setActive(!active);
@@ -49,18 +60,37 @@ const Navbar = () => {
           }   w-full lg:inline-flex lg:flex-grow lg:w-auto`}
         >
           <div className="lg:inline-flex lg:flex-row lg:ml-auto lg:w-auto w-full lg:items-center items-start  flex flex-col lg:h-auto">
-            <Link
-              href="/login"
-              className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white font-bold items-center justify-center hover:bg-blue-900 hover:text-white"
-            >
-              Login
-            </Link>
-            <Link
-              href="/register"
-              className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white font-bold items-center justify-center hover:bg-blue-900 hover:text-white"
-            >
-              Register
-            </Link>
+            {!isLogged && (
+              <>
+                <Link
+                  href="/login"
+                  className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white font-bold items-center justify-center hover:bg-blue-900 hover:text-white"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/register"
+                  className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white font-bold items-center justify-center hover:bg-blue-900 hover:text-white"
+                >
+                  Register
+                </Link>
+              </>
+            )}
+
+            {isLogged && (
+              <>
+                <button
+                  onClick={() => {
+                    localStorage.removeItem("userId");
+                    userDisptach({ type: "LOGOUT" });
+                    router.push("/");
+                  }}
+                  className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white font-bold items-center justify-center hover:bg-blue-900 hover:text-white"
+                >
+                  Logout
+                </button>
+              </>
+            )}
           </div>
         </div>
       </nav>
