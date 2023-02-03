@@ -8,9 +8,10 @@ import { UserContext } from "@/context/UserContext";
 type Props = {
   isLogged: boolean;
   isAdmin: boolean;
+  isTeacher: boolean;
 };
 
-const Navbar: React.FC<Props> = ({ isLogged, isAdmin }: Props) => {
+const Navbar: React.FC<Props> = ({ isLogged, isAdmin, isTeacher }: Props) => {
   const [active, setActive] = useState<boolean>(false);
 
   const { dispatch: userDisptach } = useContext(UserContext);
@@ -79,12 +80,37 @@ const Navbar: React.FC<Props> = ({ isLogged, isAdmin }: Props) => {
             )}
 
             {isAdmin && (
-              <Link
-                href="/manage"
-                className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white font-bold items-center justify-center hover:bg-blue-900 hover:text-white"
-              >
-                Manage
-              </Link>
+              <>
+                <Link
+                  href="#"
+                  className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white font-bold items-center justify-center"
+                >
+                  Admin
+                </Link>
+                <Link
+                  href="/manage"
+                  className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white font-bold items-center justify-center hover:bg-blue-900 hover:text-white"
+                >
+                  Manage
+                </Link>
+              </>
+            )}
+
+            {isTeacher && (
+              <>
+                <Link
+                  href="#"
+                  className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white font-bold items-center justify-center"
+                >
+                  Teacher
+                </Link>
+                <Link
+                  href="/addCourse"
+                  className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white font-bold items-center justify-center hover:bg-blue-900 hover:text-white"
+                >
+                  Add Course
+                </Link>
+              </>
             )}
 
             {isLogged && (
@@ -93,8 +119,11 @@ const Navbar: React.FC<Props> = ({ isLogged, isAdmin }: Props) => {
                   onClick={() => {
                     localStorage.removeItem("userId");
                     localStorage.removeItem("isAdmin");
+                    localStorage.removeItem("isTeacher");
                     userDisptach({ type: "LOGOUT" });
-                    router.push("/");
+                    router.push("/").then(() => {
+                      location.reload();
+                    });
                   }}
                   className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white font-bold items-center justify-center hover:bg-blue-900 hover:text-white"
                 >

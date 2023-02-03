@@ -15,6 +15,7 @@ type LoginResponse = {
   isUserSuccessfullyLoggedIn?: boolean;
   userId?: string;
   isUserAdmin?: boolean;
+  isUserTeacher?: boolean;
 };
 
 export default function Login() {
@@ -51,6 +52,12 @@ export default function Login() {
             localStorage.setItem("isAdmin", "true");
             userDisptach({ type: "ISADMIN" });
           }
+
+          if (data.isUserTeacher && data.isUserTeacher === true) {
+            localStorage.setItem("isTeacher", "true");
+            userDisptach({ type: "ISTEACHER" });
+          }
+
           router.push("/");
         }
       });
@@ -83,7 +90,7 @@ export default function Login() {
                 </label>
                 <input
                   {...register("username", { required: true })}
-                  type="username"
+                  type="text"
                   name="username"
                   id="username"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -124,7 +131,7 @@ export default function Login() {
                 Login
               </button>
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                Don`&#39;`t have an account yet? {" "}
+                Don`&#39;`t have an account yet?{" "}
                 <Link
                   href="/register"
                   className="font-medium text-primary-600 hover:underline dark:text-primary-500"

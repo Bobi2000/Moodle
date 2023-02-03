@@ -3,9 +3,10 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import db from "./../../firebase/firebase";
 
 type Data = {
+  userId?: string;
   isUserSuccessfullyLoggedIn?: boolean;
   isUserAdmin?: boolean;
-  userId?: string;
+  isUserTeacher?: boolean;
 };
 
 export default async function login(
@@ -40,9 +41,16 @@ export default async function login(
     isUserAdmin = true;
   }
 
+  let isUserTeacher = false;
+
+  if(curUser.hasOwnProperty("role") && curUser.role === "teacher") {
+    isUserTeacher = true;
+  }
+
   res.status(200).json({
     isUserSuccessfullyLoggedIn: true,
     userId: curUser.id,
     isUserAdmin,
+    isUserTeacher
   });
 }
