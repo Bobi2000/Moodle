@@ -24,8 +24,8 @@ export default function Course() {
       .then((entry: any) => {
         setCourse(entry.course);
         setLessons(entry.lessons);
-
         setLoading(false);
+
         if (entry.course.userId === localStorage.getItem("userId")) {
           setIsOwner(true);
         }
@@ -37,10 +37,10 @@ export default function Course() {
       {!loading && (
         <>
           <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
-            {course!.name}
+            {course.name}
           </h1>
           <p className="mb-6 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">
-            {course!.description}
+            {course.description}
           </p>
           {isOwner && (
             <Link
@@ -62,18 +62,48 @@ export default function Course() {
                   <p className="text-gray-700 text-base mb-4">
                     {lesson.description}
                   </p>
-                  <button
-                    type="button"
-                    className="inline-block px-6 py-2.5 bg-blue-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    type="button"
-                    className="ml-5 inline-block px-6 py-2.5 bg-red-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out"
-                  >
-                    Delete
-                  </button>
+                  {isOwner && (
+                    <>
+                      <Link
+                        href={{
+                          pathname: `/course/edit/${lesson.id}`,
+                          query: {
+                            courseId: router.query.id,
+                            name: lesson.name,
+                            description: lesson.description,
+                          },
+                        }}
+                        className="inline-block px-6 py-2.5 bg-blue-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
+                      >
+                        Edit
+                      </Link>
+                      <button
+                        onClick={() => {
+                          fetch(
+                            `/api/lesson?courseId=${router.query.id}&lessonId=${lesson.id}`,
+                            {
+                              method: "DELETE",
+                              headers: {
+                                "Content-Type": "application/json",
+                              },
+                            }
+                          )
+                            .then((response) => response.json())
+                            .then((data: any) => {
+                              setLessons(
+                                lessons.filter(
+                                  (curLesson) => curLesson.id !== lesson.id
+                                )
+                              );
+                            });
+                        }}
+                        type="button"
+                        className="ml-5 inline-block px-6 py-2.5 bg-red-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out"
+                      >
+                        Delete
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             ))}
