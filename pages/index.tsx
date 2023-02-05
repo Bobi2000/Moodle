@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
   const [courses, setCourses] = useState<any[]>([]);
+  const [news, setNews] = useState<any[]>([]);
 
   useEffect(() => {
     if (localStorage.getItem("userId")) {
@@ -17,6 +18,21 @@ export default function Home() {
           if (data.isUserTeacher) {
             fetchTeacherCourses(localStorage.getItem("userId")!);
           }
+          if (!data.isUserTeacher && !data.isUserAdmin) {
+            fetchStudentEnrolledCourses(localStorage.getItem("userId")!);
+          }
+        });
+    } else {
+      fetch(`/api/news`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((news: any[]) => {
+          console.log(news);
+          setNews(news);
         });
     }
   }, []);
@@ -31,6 +47,19 @@ export default function Home() {
       .then((response) => response.json())
       .then((courses: any[]) => {
         setCourses(courses);
+      });
+  };
+
+  const fetchStudentEnrolledCourses = (userId: string) => {
+    fetch(`/api/enrolledCourses?userId=${userId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((courses: any) => {
+        setCourses(courses.courses);
       });
   };
 
@@ -55,6 +84,35 @@ export default function Home() {
               >
                 Button
               </button> */}
+            </div>
+          </div>
+        ))}
+      {news.length !== 0 &&
+        news.map((news) => (
+          <div key={news.id} className="flex justify-center pt-6">
+            <div className="w-1/3 rounded overflow-hidden shadow-lg">
+              <img
+                className="w-full"
+                src={news.img}
+                alt="Sunset in the mountains"
+              />
+              <div className="px-6 py-4">
+                <div className="font-bold text-xl mb-2">{news.title}</div>
+                <p className="text-gray-700 text-base">
+                  {news.description}
+                </p>
+              </div>
+              <div className="px-6 pt-4 pb-2">
+                <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                  #news
+                </span>
+                <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                  #grading
+                </span>
+                <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                  #newebsite
+                </span>
+              </div>
             </div>
           </div>
         ))}

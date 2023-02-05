@@ -31,8 +31,8 @@ export default function Course() {
     })
       .then((response: any) => response.json())
       .then((data: any) => {
-        if(data.isLessonCreated) {
-          router.push(`/course/${router.query.id}`)
+        if (data.isLessonCreated) {
+          router.push(`/course/${router.query.id}`);
         }
       });
   };

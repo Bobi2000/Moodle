@@ -113,7 +113,7 @@ const Navbar: React.FC<Props> = ({ isLogged, isAdmin, isTeacher }: Props) => {
               </>
             )}
 
-            {!isTeacher && !isAdmin && (
+            {isLogged && !isTeacher && !isAdmin && (
               <>
                 <Link
                   href="#"
