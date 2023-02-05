@@ -113,6 +113,23 @@ const Navbar: React.FC<Props> = ({ isLogged, isAdmin, isTeacher }: Props) => {
               </>
             )}
 
+            {!isTeacher && !isAdmin && (
+              <>
+                <Link
+                  href="#"
+                  className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white font-bold items-center justify-center"
+                >
+                  Student
+                </Link>
+                <Link
+                  href="/course/enroll"
+                  className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white font-bold items-center justify-center hover:bg-blue-900 hover:text-white"
+                >
+                  Enroll Course
+                </Link>
+              </>
+            )}
+
             {isLogged && (
               <>
                 <button
