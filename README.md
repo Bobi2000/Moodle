@@ -22,5 +22,8 @@
 <h3>Grading students as a techer for a specific course:</h3>
 <img src="https://i.imgur.com/KsNjsXd.png"/>
 
-<h3>Admin panel</h3>
+<h3>Admin panel:</h3>
 <img src="https://i.imgur.com/ztDa0oW.png"/>
+
+<h3>Calendar:</h3>
+<img src="https://i.imgur.com/QWL40mi.png"/>
