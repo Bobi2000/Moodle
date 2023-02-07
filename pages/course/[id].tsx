@@ -80,12 +80,20 @@ export default function Course() {
             {course.description}
           </p>
           {isOwner && (
-            <Link
-              href={`/course/add/${router.query.id}`}
-              className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-black font-bold items-center justify-cente"
-            >
-              Add Lesson
-            </Link>
+            <>
+              <Link
+                href={`/course/add/${router.query.id}`}
+                className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-black font-bold items-center justify-cente"
+              >
+                Add Lesson
+              </Link>
+              <Link
+                href={`/course/grade/${router.query.id}`}
+                className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-black font-bold items-center justify-cente"
+              >
+                Grade
+              </Link>
+            </>
           )}
 
           {lessons.length !== 0 &&

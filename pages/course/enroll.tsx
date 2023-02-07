@@ -62,6 +62,7 @@ export default function Enroll() {
                                     (c) => c.courseId === course.id
                                   )[0].id,
                                   userId: localStorage.getItem("userId"),
+                                  courseId: course.id
                                 }),
                               })
                                 .then((response: any) => response.json())

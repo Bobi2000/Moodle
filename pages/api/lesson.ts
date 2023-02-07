@@ -54,21 +54,4 @@ export default async function lesson(
         return;
       });
   }
-
-  if (req.method === "POST") {
-    const data = req.body;
-
-    const lesson = { courseId: data.courseId, ...data.data, date: Date.now() };
-
-    await db
-      .collection("Courses")
-      .doc(lesson.courseId)
-      .collection("Lessons")
-      .doc()
-      .set(lesson)
-      .then(() => {
-        res.status(200).json({ isLessonCreated: true } as any);
-        return;
-      });
-  }
 }

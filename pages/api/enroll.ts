@@ -12,6 +12,8 @@ export default async function makeCourse(
     const courseId = data.courseId;
     const userId = data.userId;
 
+    await db.collection("CourseUsers").doc().set({ courseId, userId });
+
     await db
       .collection("Users")
       .doc(userId)
@@ -29,6 +31,18 @@ export default async function makeCourse(
 
     const enrolledCourseId = data.enrolledCourseId;
     const userId = data.userId;
+    const courseId = data.courseId;
+
+    await db
+      .collection("CourseUsers")
+      .where("courseId", "==", courseId)
+      .where("userId", "==", userId)
+      .get()
+      .then((res) => {
+        res.docs.map(async (doc) => {
+          await db.collection("CourseUsers").doc(doc.id).delete();
+        });
+      });
 
     await db
       .collection("Users")
