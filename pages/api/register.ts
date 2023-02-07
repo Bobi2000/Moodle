@@ -37,7 +37,13 @@ export default async function register(
   await db
     .collection("Users")
     .doc()
-    .set(data)
+    .set({
+      ...data,
+      password: CryptoJS.AES.encrypt(
+        data.password,
+        "secret key 123"
+      ).toString(),
+    })
     .then(() => {
       isUserSuccessfullyRegistered = true;
 

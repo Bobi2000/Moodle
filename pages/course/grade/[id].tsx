@@ -13,6 +13,8 @@ export default function Course() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [students, setStudents] = useState<any[]>([]);
 
+  const [grade, setGrade] = useState<number>();
+
   useEffect(() => {
     if (!router.isReady) return;
 
@@ -59,24 +61,17 @@ export default function Course() {
     formState: { errors },
   } = useForm<Grade>();
 
-  const onSubmit: SubmitHandler<Grade> = (data) => {
-    console.log(data);
-    fetch("/api/grade", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        courseId: router.query.id,
-        grade: data,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data: any) => {
-        if (data.isGraded === true) {
-          console.log("Successfully graded! ");
-        }
-      });
+  const avr = (entries: any) => {
+    let total = 0;
+    let count = 0;
+    entries.forEach((a: any) => {
+      total += Number(a.grade);
+      count++;
+    });
+
+    var rounded = Math.round((total / count + Number.EPSILON) * 100) / 100;
+
+    return rounded;
   };
 
   return (
@@ -109,35 +104,55 @@ export default function Course() {
                           {student.entriesData &&
                             student.entriesData.length !== 0 &&
                             student.entriesData.map((grade: any) => (
-                              <span key={grade.gradeId}> {grade.grade} </span>
+                              <span
+                                className="text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 rounded-full bg-white text-gray-700 border"
+                                key={grade.gradeId}
+                              >
+                                {grade.grade}
+                              </span>
                             ))}
                         </td>
-                        <td className="p-3 px-5"></td>
+                        <td className="p-3 px-5">
+                          {student.entriesData &&
+                            student.entriesData.length !== 0 && (
+                              <span className="text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 rounded-full bg-white text-gray-700 border">
+                                {avr(student.entriesData)}
+                              </span>
+                            )}
+                        </td>
                         <td className="p-3 px-5 flex justify-end">
-                          <form
-                            onSubmit={handleSubmit(onSubmit)}
-                            className="w-full"
-                          >
+                          <form className="w-full">
                             <div className="flex items-center border-b border-blue-500 py-2">
                               <input
-                                {...register("grade", { required: true })}
                                 className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
                                 type="number"
                                 placeholder="Grade"
                                 step=".50"
-                              />
-                              <input
-                                {...register("userId", {
-                                  required: true,
-                                  value: student.idUser,
-                                })}
-                                className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
-                                type="text"
-                                hidden
+                                onChange={({ target }) => {
+                                  setGrade(Number(target.value));
+                                }}
                               />
                               <button
                                 className="flex-shrink-0 bg-blue-500 hover:bg-blue-700 border-blue-500 hover:border-blue-700 text-sm border-4 text-white py-1 px-2 rounded"
                                 type="submit"
+                                onClick={() => {
+                                  fetch("/api/grade", {
+                                    method: "POST",
+                                    headers: {
+                                      "Content-Type": "application/json",
+                                    },
+                                    body: JSON.stringify({
+                                      courseId: router.query.id,
+                                      grade: { userId: student.idUser, grade },
+                                    }),
+                                  })
+                                    .then((response) => response.json())
+                                    .then((data: any) => {
+                                      if (data.isGraded === true) {
+                                        console.log("Successfully graded! ");
+                                      }
+                                    });
+                                }}
                               >
                                 Grade
                               </button>

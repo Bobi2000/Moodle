@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import db from "./../../firebase/firebase";
+var CryptoJS = require("crypto-js");
 
 type Data = {
   userId?: string;
@@ -27,7 +28,7 @@ export default async function login(
 
   const curUser = entriesData.filter(
     (e: { username: string; password: string }) =>
-      e.username == data.username && e.password == data.password
+      e.username == data.username && CryptoJS.AES.decrypt(e.password, "secret key 123").toString(CryptoJS.enc.Utf8)  == data.password
   )[0];
 
   if (!curUser) {
@@ -43,7 +44,7 @@ export default async function login(
 
   let isUserTeacher = false;
 
-  if(curUser.hasOwnProperty("role") && curUser.role === "teacher") {
+  if (curUser.hasOwnProperty("role") && curUser.role === "teacher") {
     isUserTeacher = true;
   }
 
@@ -51,6 +52,6 @@ export default async function login(
     isUserSuccessfullyLoggedIn: true,
     userId: curUser.id,
     isUserAdmin,
-    isUserTeacher
+    isUserTeacher,
   });
 }
